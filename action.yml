@@ -1,0 +1,52 @@
+name: Omnihorn — upload build
+description: Upload a build folder to Omnihorn. Builds from a branch land on the channels that follow it.
+author: Ivorn
+branding:
+  icon: upload-cloud
+  color: purple
+
+inputs:
+  api-key:
+    description: An app API key (nk_…) from the app's CI/CD tab — pass it from a secret, e.g. secrets.OMNIHORN_API_KEY.
+    required: true
+  path:
+    description: The folder whose files make up the build, e.g. ./dist.
+    required: true
+  version:
+    description: Base version MAJOR.MINOR.PATCH. Empty → the app's latest base version is reused.
+    required: false
+    default: ''
+  release-notes:
+    description: Release notes shown with the build.
+    required: false
+    default: ''
+  channel:
+    description: Also assign the build to this existing channel once it is active.
+    required: false
+    default: ''
+  create-branch-channel:
+    description: Create a private channel for a branch that no channel follows yet.
+    required: false
+    default: 'true'
+  wait:
+    description: Wait until the build is active or failed (up to 15 minutes).
+    required: false
+    default: 'true'
+  api-url:
+    description: The Omnihorn API.
+    required: false
+    default: https://api.omnihorn.com
+
+outputs:
+  build-id:
+    description: The id of the build.
+  version:
+    description: The full version, e.g. 1.4.0+build.42.
+  status:
+    description: processing (with wait false), active or failed.
+  channels:
+    description: 'JSON: [{ "channelId", "name", "action": "assigned|created|unchanged", "reason"? }]'
+
+runs:
+  using: node24
+  main: dist/index.js
